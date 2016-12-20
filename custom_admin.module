@@ -1,0 +1,407 @@
+<?php
+
+/**
+* Implements hook_menu()
+*
+* Defines config pages for site settings.
+*/
+function custom_admin_menu() {
+  // Config menu item
+  $items['admin/custom-admin'] = array(
+    'title' => 'Custom Config',
+    'description' => 'Parent menu item for site settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('custom_admin_global_settings'),
+    'access arguments' => array('administer custom admin'),
+    'weight' => 10,
+  );
+
+  // Global site settings
+  $items['admin/custom-admin/global'] = array(
+    'title' => 'Global Config',
+    'description' => 'Configuration page for the general settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('custom_admin_global_settings'),
+    'access arguments' => array('administer custom admin'),
+    'weight' => 0,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+
+  return $items;
+}
+
+/**
+* Implements hook_permission()
+*
+* Creates the permission to edit the site settings.
+*/
+function custom_admin_permission() {
+  return array(
+    'administer custom admin' => array(
+      'title' => t('Administer Custom Admin Settings'),
+      'description' => t('Allows the user to access the custom admin configuration pages.'),
+    ),
+  );
+}
+
+/**
+* Global config form
+*
+* FORM EXAMPLES
+* @see: https://api.drupal.org/api/drupal/developer!topics!forms_api_reference.html/7.x/
+*/
+function custom_admin_global_settings() {
+  $form = array();
+
+  // SVG Logo
+  $form['site_config'] = array(
+    '#type' => 'vertical_tabs',
+  );
+
+  $form['custom_site_logo'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Site logo'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+    '#group' => 'site_config'
+  );
+
+  $form['custom_site_logo']['custom_site_logo_svg'] = array(
+    '#title' => t('Site logo (svg)'),
+    '#type' => 'managed_file',
+    '#description' => t('The main site logo. This file should be a <b><em>svg</em></b>. Maximum file size <b><em>2 MB</em></b>.'),
+    '#default_value' => variable_get('custom_site_logo_svg', ''),
+    '#upload_location' => 'public://custom_admin/',
+    '#upload_validators' => array(
+      'file_validate_extensions' => array('svg'),
+      // Pass the maximum file size in bytes
+      'file_validate_size' => array(2*1024*1024),
+    ),
+  );
+
+  $form['custom_site_logo']['custom_site_logo_png'] = array(
+    '#title' => t('Site logo (png)'),
+    '#type' => 'managed_file',
+    '#description' => t('Fallback site logo for older browsers. This file should be a <b><em>png</em></b>. Maximum file size <b><em>2 MB</em></b>.'),
+    '#default_value' => variable_get('custom_site_logo_png', ''),
+    '#upload_location' => 'public://custom_admin/',
+    '#upload_validators' => array(
+      'file_validate_extensions' => array('png'),
+      // Pass the maximum file size in bytes
+      'file_validate_size' => array(2*1024*1024),
+    ),
+  );
+  //
+
+  // Social links
+  $form['custom_site_social'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Social links'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+    '#group' => 'site_config'
+  );
+
+  $form['custom_site_social']['ca_facebook'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Facebook'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+    '#attributes' => array('class' => array('container-inline'))
+  );
+
+  $form['custom_site_social']['ca_facebook']['ca_facebook_link'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Link'),
+    '#default_value' => variable_get('ca_facebook_link', ''),
+    '#size' => 60,
+    '#maxlength' => 128,
+  );
+
+  $form['custom_site_social']['ca_facebook']['ca_facebook_class'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Icon class'),
+    '#default_value' => variable_get('ca_facebook_class', 'icon icon-facebook'),
+    '#size' => 60,
+    '#maxlength' => 128,
+  );
+
+  $form['custom_site_social']['ca_twitter'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Twitter'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+    '#attributes' => array('class' => array('container-inline'))
+  );
+
+  $form['custom_site_social']['ca_twitter']['ca_twitter_link'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Link'),
+    '#default_value' => variable_get('ca_twitter_link', ''),
+    '#size' => 60,
+    '#maxlength' => 128,
+  );
+
+  $form['custom_site_social']['ca_twitter']['ca_twitter_class'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Icon class'),
+    '#default_value' => variable_get('ca_twitter_class', 'icon icon-twitter'),
+    '#size' => 60,
+    '#maxlength' => 128,
+  );
+
+  $form['custom_site_social']['ca_linkedin'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Linkedin'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+    '#attributes' => array('class' => array('container-inline'))
+  );
+
+  $form['custom_site_social']['ca_linkedin']['ca_linkedin_link'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Link'),
+    '#default_value' => variable_get('ca_linkedin_link', ''),
+    '#size' => 60,
+    '#maxlength' => 128,
+  );
+
+  $form['custom_site_social']['ca_linkedin']['ca_linkedin_class'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Icon class'),
+    '#default_value' => variable_get('ca_linkedin_class', 'icon icon-linkedin'),
+    '#size' => 60,
+    '#maxlength' => 128,
+  );
+
+  $form['custom_site_social']['ca_youtube'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Youtube'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+    '#attributes' => array('class' => array('container-inline'))
+  );
+
+  $form['custom_site_social']['ca_youtube']['ca_youtube_link'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Link'),
+    '#default_value' => variable_get('ca_youtube_link', ''),
+    '#size' => 60,
+    '#maxlength' => 128,
+  );
+
+  $form['custom_site_social']['ca_youtube']['ca_youtube_class'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Icon class'),
+    '#default_value' => variable_get('ca_youtube_class', 'icon icon-youtube'),
+    '#size' => 60,
+    '#maxlength' => 128,
+  );
+
+  $form['custom_site_social']['ca_instagram'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Instagram'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+    '#attributes' => array('class' => array('container-inline'))
+  );
+
+  $form['custom_site_social']['ca_instagram']['ca_instagram_link'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Link'),
+    '#default_value' => variable_get('ca_instagram_link', ''),
+    '#size' => 60,
+    '#maxlength' => 128,
+  );
+
+  $form['custom_site_social']['ca_instagram']['ca_instagram_class'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Icon class'),
+    '#default_value' => variable_get('ca_instagram_class', 'icon icon-instagram'),
+    '#size' => 60,
+    '#maxlength' => 128,
+  );
+  //
+
+  // Footer Text
+  $form['custom_site_footer'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Site Footer'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+    '#group' => 'site_config'
+  );
+
+  $footer_text = variable_get('ca_footer_text', array('value' => '', 'format' => 'html'));
+  $form['custom_site_footer']['ca_footer_text'] = array(
+    '#type' => 'text_format',
+    '#title' => t('Footer Text Block'),
+    '#default_value' => $footer_text['value'],
+    '#format' => $footer_text['format'],
+  );
+  //
+
+  $form['#submit'] = array('custom_admin_global_settings_submit');
+
+  return system_settings_form($form);
+}
+
+/**
+* Global config submit handler
+*/
+function custom_admin_global_settings_submit($form, &$form_state) {
+  global $user;
+  $account = $user;
+
+  $file_fields = array(
+    'custom_site_logo_svg',
+    'custom_site_logo_png',
+  );
+
+  foreach ($file_fields as $key) {
+    if ($form_state['values'][$key] > 0) {
+      // Load the file via file.fid.
+      $file = file_load($form_state['values'][$key]);
+      // Change status to permanent.
+      $file->status = FILE_STATUS_PERMANENT;
+      // Save.
+      file_save($file);
+      // Record that the module (in this example, user module) is using the file.
+      file_usage_add($file, 'user', 'user', $account->uid);
+    }
+  }
+}
+
+/**
+* Validation global settings
+*/
+function custom_admin_global_settings_validate($form, &$form_state) {
+  // Check if the social urls are valid.
+  $social_urls = array(
+    'ca_facebook' => $form_state['values']['ca_facebook_link'],
+    'ca_twitter' => $form_state['values']['ca_twitter_link'],
+    'ca_linkedin' => $form_state['values']['ca_linkedin_link'],
+    'ca_youtube' => $form_state['values']['ca_youtube_link'],
+    'ca_instagram' => $form_state['values']['ca_instagram_link']
+  );
+
+  foreach ($social_urls as $key => $url) {
+    $valid = valid_url($url, $absolute = TRUE);
+
+    if (!empty($url) && !$valid) {
+      form_set_error($key, t('This is not a valid url. Urls must start with http(s)://.'));
+    }
+  }
+}
+
+
+/**
+* Implements template_preprocess_page
+*
+* Add logos to page vars. SEE README FILE FOR MORE INSTRUCTION.
+*/
+function custom_admin_preprocess_page(&$vars) {
+  $vars['logo_svg'] = '';
+  $vars['logo_png'] = '';
+
+  $logo_svg_fid = variable_get('custom_site_logo_svg', '');
+  if ($logo_svg_file = file_load($logo_svg_fid)) {
+    $vars['logo_svg'] = file_create_url($logo_svg_file->uri);
+  }
+
+  $logo_png_fid = variable_get('custom_site_logo_png', '');
+  if ($logo_png_file = file_load($logo_png_fid)) {
+    $vars['logo_png'] = file_create_url($logo_png_file->uri);
+  }
+}
+
+/**
+ * Implements hook_views_api().
+ *
+ * Tell views about this module.
+ */
+function custom_admin_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'custom_admin'),
+  );
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function custom_admin_block_info() {
+  $blocks['custom_social_links'] = array(
+    'info' => t('Site Social Links'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  $blocks['custom_footer_text'] = array(
+    'info' => t('Footer Text'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function custom_admin_block_view($delta = ''){
+  switch($delta){
+    case 'custom_social_links':
+    if(user_access('access content')){
+      $block['subject'] = '';
+      $block['content'] = social_link_block_content();
+      return $block;
+    }
+    break;
+    case 'custom_footer_text':
+    if(user_access('access content')){
+      $block['subject'] = '';
+      $block['content'] = footer_text_block_content();
+      return $block;
+    }
+    break;
+  }
+}
+
+/**
+ * Social link block content
+ */
+function social_link_block_content(){
+  $items = array();
+  $items['facebook_url'] = variable_get('ca_facebook_link');
+  $items['facebook_class'] = variable_get('ca_facebook_class');
+  $items['twitter_url'] = variable_get('ca_twitter_link');
+  $items['twitter_class'] = variable_get('ca_twitter_class');
+  $items['youtube_url'] = variable_get('ca_youtube_link');
+  $items['youtube_class'] = variable_get('ca_youtube_class');
+  $items['linkedin_url'] = variable_get('ca_linkedin_link');
+  $items['linkedin_class'] = variable_get('ca_linkedin_class');
+  $items['instagram_url'] = variable_get('ca_instagram_link');
+  $items['instagram_class'] = variable_get('ca_instagram_class');
+
+  return theme('social_link_block_content', $items);
+}
+
+/**
+ * Footer text block
+ */
+ function footer_text_block_content() {
+   $output = variable_get('ca_footer_text', array('value' => '', 'format' => 'html'));
+   $output = check_markup($output['value'], $output['format']);
+   return $output;
+ }
+
+/**
+ * Implements hook_theme().
+ */
+ function custom_admin_theme($existing, $type, $theme, $path) {
+ 	$themes['social_link_block_content'] = array(
+ 	    'variables' => array('block' => array()),
+ 	    'template' => 'custom_social_links', // the name fo your .tpl.php file.
+ 	    'path' => $path . '/theme',   // path to the template in your module
+ 	  );
+
+ 	return $themes;
+ }
