@@ -405,3 +405,11 @@ function social_link_block_content(){
 
  	return $themes;
  }
+
+ /**
+  * Hook to extend/change the ckeditor settings.
+ */
+ function custom_admin_ckeditor_settings_alter(&$settings, $conf) {
+   $settings['customConfig'] = drupal_get_path('module', 'custom_admin') . '/ckeditor.config.js';
+   $settings['format_tags'] = 'p;div;pre;address;h2;h3;h4';
+ }
